@@ -4,7 +4,7 @@
 
 ## Preliminary Question
 
-### Can machine learning identify NFL players whose future performance is likely to exceed or fall below the value implied by their contracts?
+### Can machine learning help NFL front offices make better contract decisions by predicting a player's future value before signing or extending a contract?
 
 ## Hypothesis
 
