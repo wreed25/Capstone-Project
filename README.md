@@ -1,92 +1,96 @@
 
 # Predicting NFL Player Value to Identify Contract Overpayment Risk
 
+## Project Overview
 
-The National Football League (NFL) operates as a 32-team enterprise under a hard salary cap. For the 2026 season, each team is limited to a $301.2 million salary cap, while contract structures such as signing bonus proration, guaranteed money, and dead cap charges increase the complexity of roster construction. Every personnel decision requires balancing player performance, financial constraints, injury risk, and long-term roster strategy.
+NFL front offices must balance player performance with salary cap constraints when making roster and contract decisions. This capstone project uses machine learning to evaluate wide receiver performance and ultimately identify potential contract overpayment risk.
 
-General Managers must determine which players provide the greatest value for their salary-cap investment, which veterans should receive contract extensions, which free agents represent good value, and when younger, less expensive players can replace higher-cost veterans.
-
-This project investigates whether machine learning can improve personnel decisions by predicting a player's future value relative to contract cost before a contract is signed or extended.
+The project is being completed in phases. The current modeling phase focuses on predicting a wide receiver's next season receiving yards using historical player performance data. A later phase will integrate performance predictions with contract information to evaluate potential contract overpayment risk.
 
 ## Research Question
 
-Can machine learning help NFL front offices identify player contract overpayment risk by predicting a player's future value before signing or extending a contract?
+Can machine learning help NFL front offices identify player contract overpayment risk by predicting future player performance before signing or extending a contract?
 
-## Hypothesis
+## Current Modeling Objective
 
-Wide receivers with strong efficiency metrics, consistent target share, high snap participation, younger age, and minimal injury-related absences will generate greater future value per salary-cap dollar than receivers whose contracts are primarily justified by high volume statistics or one exceptional season.
+The current modeling objective is to predict next season receiving yards for NFL wide receivers.
 
-## Prediction
+The finalized modeling dataset contains:
 
-If the hypothesis is supported, the model will identify characteristics associated with contract overpayment risk, including:
+- 2,127 player season observations
+- 619 unique wide receivers
+- 139 predictor variables
+- next_season_receiving_yards as the prediction target
 
-- Older receivers experiencing age-related performance decline
-- Players with decreasing efficiency metrics
-- Players with declining target share or snap participation
-- Players whose recent production exceeds their long-term performance trend
-- Contracts whose projected player value is lower than their financial commitment
+Because players can appear across multiple seasons, the data have a longitudinal structure. The modeling workflow uses a grouped train and test split based on player_id so that all observations for an individual player remain entirely within either the training or testing set. This prevents player level information leakage.
 
+## Preprocessing and Feature Engineering
 
-## Data Sources
+The completed preprocessing and feature engineering workflow includes:
 
-The project integrates three validated NFL datasets:
+- Creation of the next season receiving yards target
+- Removal of variables that could introduce leakage or unnecessary redundancy
+- Grouped train and test splitting by player
+- Median imputation using values learned from the training data
+- Feature standardization using parameters learned from the training data
+- Principal Component Analysis
+- Lasso feature selection
 
-- **player_stats**: Seasonal player performance statistics
-- **players**: Master player lookup table
-- **contracts**: NFL contract and salary information
+Principal Component Analysis reduced the 139 predictor variables to 48 principal components while retaining approximately 95 percent of the variance.
 
-The data integration strategy was validated using the NFL GSIS player identifier:
-
-```text
-player_stats.player_id
-        │
-        ▼
-players.gsis_id
-        │
-        ▼
-contracts.gsis_id
-```
-
-This relationship was verified during the data validation phase and forms the foundation for constructing the modeling dataset.
+Lasso retained 69 predictors and removed 70 predictors, providing an alternative feature selection approach using the original football variables.
 
 ## Project Status
 
-The project is currently in the data engineering phase. Validated NFL datasets are being integrated into an analytical dataset for model development.
-
 ### Completed
 
-- Repository structure established
-- GitHub collaboration workflow configured
-- Data source validation completed
-- Dataset integration strategy validated
+- Preliminary project proposal
+- Final project proposal
+- Data source validation
+- Data collection and integration
+- Exploratory Data Analysis
+- Preprocessing and feature engineering
+- Data dictionary and codebook
+- Grouped validation strategy
 
-### In Progress
+### Current
 
-- Data collection
-- Construction of the analytical dataset
+- Model development and evaluation
 
 ### Upcoming
 
-- Exploratory Data Analysis (EDA)
-- Feature engineering
-- Machine learning model development
-- Model evaluation
-- Final report
+- Model refinement
+- Hyperparameter tuning
+- Final model evaluation
+- Contract data integration
+- Contract overpayment risk analysis
+- Final report and presentation
 
 ## Repository Structure
 
 ```text
 Capstone-Project/
-│
-├── data/          # Raw and processed datasets
-├── docs/          # Project documentation
-├── figures/       # Visualizations
-├── models/        # Saved models
-├── notebooks/     # Jupyter notebooks
-├── references/    # Supporting references
-├── reports/       # Final reports and deliverables
-├── src/           # Reusable source code
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
+|
+|-- data/
+|   |-- processed/
+|   `-- raw/
+|
+|-- documentation/
+|   |-- Appendix_A_Codebook.docx
+|   `-- Master_Codebook.xlsx
+|
+|-- figures/
+|-- models/
+|
+|-- notebooks/
+|   |-- 01_Data_Source_Validation.ipynb
+|   |-- 02_Data_Collection_and_Integration.ipynb
+|   |-- 03_Exploratory_Data_Analysis_EDA.ipynb
+|   |-- 04_Feature_Engineering_and_Preprocessing.ipynb
+|   `-- 05_Modeling.ipynb
+|
+|-- references/
+|-- reports/
+|-- src/
+|-- requirements.txt
+`-- README.md
