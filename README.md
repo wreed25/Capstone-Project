@@ -1,15 +1,16 @@
 
 # Predicting NFL Player Value to Identify Contract Overpayment Risk
 
-## Project Overview
+**Team Members:** William Reed (WR) and Jason Kuzmission (JK)  
+**Course:** DSE6311 Capstone Project
 
-NFL front offices must balance player performance with salary cap constraints when making roster and contract decisions. This capstone project uses machine learning to evaluate wide receiver performance and ultimately identify potential contract overpayment risk.
+## Background and Research Question
 
-The project is being completed in phases. The current modeling phase focuses on predicting a wide receiver's next season receiving yards using historical player performance data. A later phase will integrate performance predictions with contract information to evaluate potential contract overpayment risk.
+This project asks whether historical wide receiver performance, usage, efficiency, and player information can predict next season receiving yards well enough to support later contract risk analysis for an NFL General Manager.
 
-## Research Question
+The working hypothesis is that opportunity, efficiency, production, and experience contain useful predictive information, and that a multivariable model will outperform a simple forecast based only on previous season receiving yards.
 
-Can machine learning help NFL front offices identify player contract overpayment risk by predicting future player performance before signing or extending a contract?
+The current phase focuses on predicting next season receiving yards. Contract data will be added later so predicted production can be compared with compensation without allowing contract information to influence the performance target.
 
 ## Current Modeling Objective
 
@@ -22,7 +23,7 @@ The finalized modeling dataset contains:
 - 139 predictor variables
 - next_season_receiving_yards as the prediction target
 
-Because players can appear across multiple seasons, the data have a longitudinal structure. The modeling workflow uses a grouped train and test split based on player_id so that all observations for an individual player remain entirely within either the training or testing set. This prevents player level information leakage.
+Because players can appear across multiple seasons, the data have a longitudinal structure. The modeling workflow uses a grouped train and test split based on player so that all observations for an individual player remain entirely within either the training or testing set. This prevents player level information leakage.
 
 ## Preprocessing and Feature Engineering
 
@@ -79,18 +80,30 @@ Capstone-Project/
 |   |-- Appendix_A_Codebook.docx
 |   `-- Master_Codebook.xlsx
 |
-|-- figures/
-|-- models/
-|
 |-- notebooks/
 |   |-- 01_Data_Source_Validation.ipynb
 |   |-- 02_Data_Collection_and_Integration.ipynb
-|   |-- 03_Exploratory_Data_Analysis_EDA.ipynb
+|   |-- 03_Exploratory_Data_Analysis_(EDA).ipynb
 |   |-- 04_Feature_Engineering_and_Preprocessing.ipynb
 |   `-- 05_Modeling.ipynb
 |
-|-- references/
 |-- reports/
-|-- src/
-|-- requirements.txt
+|
 `-- README.md
+```
+## Reproducing the Analysis
+
+The project notebooks are designed to be run in numerical order because later notebooks use datasets created during earlier stages of the analysis.
+
+1. Clone or download the repository.
+2. Open the project from the repository root directory.
+3. Run the notebooks in the following order:
+   - `01_Data_Source_Validation.ipynb`
+   - `02_Data_Collection_and_Integration.ipynb`
+   - `03_Exploratory_Data_Analysis_(EDA).ipynb`
+   - `04_Feature_Engineering_and_Preprocessing.ipynb`
+   - `05_Modeling.ipynb`
+4. Keep the repository folder structure unchanged so the relative data paths used in the notebooks remain valid.
+5. Run each notebook from beginning to end before proceeding to the next notebook.
+
+The notebooks contain markdown documentation, validation checks, and saved outputs to document the analytical workflow and verify key processing and modeling steps.
