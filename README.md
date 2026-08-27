@@ -1,10 +1,10 @@
+Predicting NFL Player Value to Identify Contract Overpayment Risk
 
-# Predicting NFL Player Value to Identify Contract Overpayment Risk
+Team Members: William Reed (WR) and Jason Kuzmission (JK)
+Course: DSE6311 Capstone Project
+Stakeholder: NFL General Manager
 
-**Team Members:** William Reed (WR) and Jason Kuzmission (JK)  
-**Course:** DSE6311 Capstone Project
-
-## Background and Research Question
+Project Overview
 
 This project asks whether historical wide receiver performance, usage,
 efficiency, and player information can predict next season receiving yards
@@ -16,165 +16,224 @@ experience contain useful predictive information, and that a multivariable
 model will outperform a simple forecast based only on previous season
 receiving yards.
 
-The current modeling phase predicts next season receiving yards. Contract
-data will be incorporated separately so predicted production can later be
-compared with compensation without allowing contract information to influence
-the performance prediction model.
+The workflow first predicts next season receiving yards without using contract
+information. Contract data are introduced only after the performance forecast
+is complete. The final output is a decision support screen intended to help a
+front office identify contracts that deserve additional review.
 
-## Current Modeling Objective
+Key Results
 
-The current modeling objective is to predict next season receiving yards for
-NFL wide receivers.
+The final modeling dataset contains 2,129 player season observations and
+134 model predictors.
 
-The finalized modeling dataset contains:
+Tuned Random Forest was selected as the primary model. On the held out player
+grouped test set, it produced:
 
-- 2,127 player-season observations
-- 619 unique wide receivers
-- 139 predictor variables
-- next_season_receiving_yards as the prediction target
+MAE: 219.94 receiving yards
 
-Because players can appear across multiple seasons, the data have a
-longitudinal structure. The modeling workflow uses a grouped train and test
-split based on player so that all observations for an individual player remain
-entirely within either the training or testing set.
+RMSE: 295.65 receiving yards
 
-The finalized split contains:
+R squared: 0.517
 
-- 1,683 training observations from 495 players
-- 444 held-out test observations from 124 players
-- 0 players appearing in both training and testing data
+The final contract analysis produced 919 matched player season contract
+observations and identified 10 High Cost / Lower Production Review cases.
 
-This player grouped design reduces the risk of player level information
-leakage.
+The model is intended to create a review queue, not make an automatic contract
+decision.
 
-## Preprocessing and Feature Engineering
+Quick Start
 
-The completed preprocessing and feature engineering workflow includes:
+The project is organized as an ordered Jupyter notebook workflow.
 
-- Creation of the next season receiving-yards target
-- Removal of observations without a valid consecutive season target
-- Removal of variables that could introduce leakage or unnecessary redundancy
-- Grouped train and test splitting by player
-- Median imputation using values learned from the training data
-- Feature standardization using parameters learned from the training data
-- Principal Component Analysis
-- Lasso feature selection
+Clone or download this repository.
 
-Principal Component Analysis reduced the 139 predictor variables to 48
-principal components while retaining approximately 95 percent of the
-variance.
+Create and activate a Python virtual environment.
 
-Lasso retained 69 predictors and removed 70 predictors, providing an
-alternative feature-selection approach using the original football variables.
+Install the dependencies in requirements.txt.
 
-## Model Development and Evaluation
+Open the notebooks directory.
 
-Notebook 06 establishes the baseline models and diagnostic framework.
-Notebook 07 evaluates tunable nonlinear models and performs hyperparameter
-tuning.
+Run Notebooks 01 through 08 in numerical order.
 
-Models evaluated include:
+Windows PowerShell
 
-- Historical persistence baseline
-- Multiple Linear Regression
-- Principal Component Regression
-- Lasso Regression
-- Random Forest Regression
-- Gradient Boosting Regression
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 
-Model performance is evaluated using:
+Open the repository in VS Code or Jupyter and select the Python interpreter
+from the project virtual environment.
 
-- Mean Absolute Error (MAE)
-- Root Mean Squared Error (RMSE)
-- R-squared
-- Training-versus-testing performance
-- Five-fold player-grouped cross-validation
-- Residual and model diagnostics
+Notebook Execution Order
 
-The current best-performing model is tuned Gradient Boosting, with held-out
-test performance of:
+Order
 
-- MAE: 212.33 receiving yards
-- RMSE: 284.28 receiving yards
-- R-squared: 0.549
+Notebook
 
-The selected Gradient Boosting hyperparameters are:
+Purpose
 
-- n_estimators = 300
-- learning_rate = 0.05
-- max_depth = 2
-- min_samples_leaf = 10
+01
 
-The tuned Gradient Boosting model currently provides the strongest held-out
-performance, although the tuned Random Forest performs similarly. Model
-selection will continue to be evaluated as the project moves into the
-contract-value phase.
+01_Data_Source_Validation.ipynb
 
-## Custom Function
+Validates required source data
 
-Notebook 07 includes the custom evaluate_model(y_true, y_pred) function.
+02
+
+02_Data_Collection_and_Integration.ipynb
+
+Collects and integrates player season data
+
+03
+
+03_Exploratory_Data_Analysis_(EDA).ipynb
+
+Performs exploratory data analysis
+
+04
+
+04_Feature_Engineering_and_Preprocessing.ipynb
+
+Creates the target, engineers features, and prepares modeling data
+
+05
+
+05_Modeling.ipynb
+
+Develops the initial modeling workflow
+
+06
+
+06_Baseline_Models.ipynb
+
+Establishes baseline models and comparisons
+
+07
+
+07_Model_Tuning_and_Evaluation.ipynb
+
+Tunes models and performs final performance validation
+
+08
+
+08_Contract_Value_and_GM_Decision_Support.ipynb
+
+Integrates contracts and creates the GM decision support output
+
+Run each notebook completely before moving to the next notebook. The notebooks
+use project relative paths and create the processed data and model artifacts
+required by later stages.
+
+Reproducing the Analysis
+
+For a clean reproduction:
+
+Start with a fresh kernel.
+
+Run Notebooks 01 through 08 in order.
+
+Confirm that each notebook completes without an execution error.
+
+Verify the final audit in Notebook 08.
+
+A successful final Notebook 08 audit should report:
+
+Final rows: 919
+Final columns: 18
+Duplicate player-season-outcome keys: 0
+Missing GM categories: 0
+
+The final category counts should be:
+
+Market-Aligned / Other: 719
+High-Cost / High-Production: 177
+Lower-Cost / High-Production Value: 13
+High-Cost / Lower-Production Review: 10
+
+Minor differences in printed formatting are acceptable, but the values should
+match.
+
+Custom Function
+
+Notebook 07 contains the custom function:
+
+evaluate_model(y_true, y_pred)
 
 The function accepts observed and predicted values and returns the regression
-metrics used throughout model evaluation:
+metrics used for model evaluation:
 
-- MAE
-- RMSE
-- R-squared
+MAE
 
-The function provides a reusable and consistent approach for evaluating
-regression-model performance during continued model development.
+RMSE
 
-## Team Contributions
+R squared
 
-Both team members contribute to project development, review, documentation,
+Example:
+
+metrics = evaluate_model(y_test, predictions)
+print(metrics)
+
+This provides a consistent and reusable method for evaluating regression model
+performance.
+
+Team Contributions and Code Review
+
+Both team members contributed to project development, review, documentation,
 and validation.
 
-- **William Reed (WR):** primary development of the current authoritative
-  preprocessing, baseline-modeling, candidate-model, tuning, and evaluation
-  workflow; report development and analytical validation.
-- **Jason Kuzmission (JK):** exploratory analysis, preprocessing and baseline
-  modeling work on the team branch; documentation contributions and model/code
-  review.
-- **Shared responsibilities:** data validation, code review, model evaluation,
-  report review, and final project preparation.
+William Reed (WR): primary development of the authoritative
+preprocessing, baseline modeling, candidate model, tuning, evaluation, and
+GM decision support workflow; report development and analytical validation.
 
-Team roles may change by week as required by the course project.
+Jason Kuzmission (JK): exploratory analysis, preprocessing and baseline
+modeling work on the team branch; documentation contributions and model and
+code review.
 
-## Project Status
+Shared responsibilities: data validation, code review, model evaluation,
+report review, and final project preparation.
 
-### Completed
+Team member initials are used in notebook documentation and code annotations
+to identify responsibility where appropriate.
 
-- Preliminary project proposal
-- Final project proposal
-- Data source validation
-- Data collection and integration
-- Exploratory Data Analysis
-- Preprocessing and feature engineering
-- Data dictionary and codebook
-- Player-grouped validation strategy
-- Baseline model development
-- Candidate model evaluation
-- Random Forest hyperparameter tuning
-- Gradient Boosting hyperparameter tuning
-- Current best-model selection
-- Model diagnostics and overfitting assessment
+Testing and Reproducibility
 
-### Current
+The workflow includes validation checks for the modeling data, player grouped
+splits, temporal evaluation, contract matching, duplicate keys, and final GM
+categories.
 
-- Code review and reproducibility validation
-- Final model documentation
+The finalized workflow has been self tested by running the notebooks through
+the complete analysis.
 
-### Upcoming
+For the final cross machine test, a second user should clone the finalized
+repository, follow only this README, run the notebooks in order, and verify the
+Notebook 08 audit shown above.
 
-- Contract data integration
-- Contract overpayment risk analysis
-- Final model interpretation
-- Final report and presentation
-- Final cross-machine reproducibility testing
+Cross machine test record
 
-## Repository Structure
+Tester:
 
-```text
+Date:
+
+Environment:
+
+Result:
+
+Complete this record only after the independent test has actually been
+performed.
+
+Documentation
+
+Additional project documentation is available in the repository:
+
+Master Data Dictionary
+
+Appendix A Codebook
+
+Final Report
+
+Repository Structure
+
 Capstone-Project/
 |
 |-- data/
@@ -182,8 +241,10 @@ Capstone-Project/
 |   `-- raw/
 |
 |-- documentation/
-|   |-- Appendix_A_Codebook.docx
-|   `-- Master_Codebook.xlsx
+|
+|-- figures/
+|
+|-- models/
 |
 |-- notebooks/
 |   |-- 01_Data_Source_Validation.ipynb
@@ -192,8 +253,11 @@ Capstone-Project/
 |   |-- 04_Feature_Engineering_and_Preprocessing.ipynb
 |   |-- 05_Modeling.ipynb
 |   |-- 06_Baseline_Models.ipynb
-|   `-- 07_Model_Tuning_and_Evaluation.ipynb
+|   |-- 07_Model_Tuning_and_Evaluation.ipynb
+|   `-- 08_Contract_Value_and_GM_Decision_Support.ipynb
 |
+|-- references/
 |-- reports/
-|
+|-- src/
+|-- requirements.txt
 `-- README.md
